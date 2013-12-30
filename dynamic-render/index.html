@@ -1,0 +1,17 @@
+<html>
+<head>
+  <title>Hello World!</title>
+</head>
+<body>
+</body>
+
+<script>
+  var fs = require('fs');
+
+  fs.readFile('./dummy.html', 'utf8', function(err, html) {
+    alert(new Date())
+    document.body.innerHTML = html;
+    alert(new Date())
+  });
+</script>
+</html>

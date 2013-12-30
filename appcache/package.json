@@ -1,0 +1,8 @@
+{
+  "name": "app cache",
+  "main": "http://127.0.0.1:8080/index.html",
+  "node-remote": "http://127.0.0.1:8080/",
+  "webkit": {
+    "page-cache": true
+  }
+}

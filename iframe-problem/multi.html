@@ -1,0 +1,18 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>iframe problem test</title>
+</head>
+<body>
+	<iframe id="iframe" src="iframe.html" nwdisable nwfaketop></iframe>
+	<button onclick="accessToChild()">access to child</button>
+	<script>
+		var iframe = document.getElementById('iframe');
+		var childWindow = iframe.contentWindow;
+
+		function accessToChild() {
+			childWindow.accessFromParent();
+		}
+	</script>
+</body>
+</html>

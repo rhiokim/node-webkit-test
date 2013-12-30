@@ -1,0 +1,5 @@
+{
+  "name": "dyamic-render",
+  "main": "index.html",
+  "chromium-args": "--enable-threaded-compositing"
+}

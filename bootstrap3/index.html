@@ -1,0 +1,48 @@
+<html>
+<head>
+  <title>Hello World!</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+    }  
+
+    .fade {
+      opacity: 0;
+      -webkit-transition: opacity 0.15s linear;
+      -moz-transition: opacity 0.15s linear;
+      -o-transition: opacity 0.15s linear;
+      transition: opacity 0.15s linear;
+    }
+
+    .fade.in {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="target" class="fade in">css3 transition test on node-webkit</h1>
+</body>
+
+<script>
+  var el = document.getElementById('target');
+  
+  function show() {
+    el.setAttribute('class', 'fade in');
+  }
+
+  function hide() {
+    el.setAttribute('class', 'fade');
+  }
+
+  window.onload = function() {
+    var flag = true;
+    setInterval(function() {
+      flag ? show() : hide();
+      flag = !flag;
+    }, 2000);
+  };
+
+  hide();
+</script>
+</html>

@@ -1,0 +1,21 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>iframe problem test</title>
+
+	<script>
+		var nwgui = require('nw.gui');
+		var child1, child2;
+
+		function openWin() {
+			child1 = nwgui.Window.open('multi.html');
+			child2 = nwgui.Window.open('multi.html');
+		}
+
+		openWin();
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
