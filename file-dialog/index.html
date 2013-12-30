@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>file dialog test for window</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <!-- OR -->
+  <script src="http://ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
+</head>
+<body>
+  <input style="display:none;" id="fileDialog" type="file" />
+  <button id="show-dialog">show file dialog</button>
+  <script>
+  function chooseFile(name) {
+      var chooser = $(name);
+      chooser.change(function(evt) {
+            console.log($(this).val());
+          });
+  
+      chooser.trigger('click');  
+    }
+
+    $('#show-dialog').click(function() {
+      chooseFile('#fileDialog')
+    });
+  </script>
+</body>
+</html>

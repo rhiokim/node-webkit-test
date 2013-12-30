@@ -1,0 +1,8 @@
+{
+  "main": "index.html",
+  "name": "i18next",
+  "window": {
+    "toolbar": true,
+    "show": true
+  }
+}

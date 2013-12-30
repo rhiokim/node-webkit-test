@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Context menu test on Linux</title>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+    We are using node.js <script>document.write(process.version)</script>.
+  </body>
+	<script>
+		// Load native UI library
+		var gui = require('nw.gui');
+
+		// Create an empty menu
+		var menu = new gui.Menu();
+
+		// Add some items
+		menu.append(new gui.MenuItem({ label: 'Item A' }));
+		menu.append(new gui.MenuItem({ label: 'Item B' }));
+		menu.append(new gui.MenuItem({ type: 'separator' }));
+		menu.append(new gui.MenuItem({ label: 'Item C' }));
+
+		document.body.addEventListener('contextmenu', function(ev) { 
+		  ev.preventDefault();
+		  menu.popup(ev.x, ev.y);
+		  return false;
+		});
+
+		gui.Window.get().enterFullscreen();
+	</script>
+</html>

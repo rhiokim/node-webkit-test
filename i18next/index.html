@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>i18next</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="script/i18next-1.6.3.js"></script>
+</head>
+<body>
+  <span data-i18n="file.new">file.new</span>
+  <script>
+    i18n.init({
+      lng: 'ko',
+      getAsync: false,
+      fallbackLng: false,
+      resGetPath: 'locales/__lng__/__ns__.json',
+      ns: { namespaces: [ 'pad', 'menu' ], defaultNs: 'menu' }
+    }, function(t) {
+      alert(t('file.new'))
+    });
+    alert(i18n.t('file.new'));
+    $('body').i18n();
+  </script>
+</body>
+</html>

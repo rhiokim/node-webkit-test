@@ -1,0 +1,7 @@
+{
+  "name": "file dialog test",
+  "main": "index.html",
+  "window": {
+    "toolbar": false
+  }
+}
