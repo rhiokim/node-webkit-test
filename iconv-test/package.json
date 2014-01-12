@@ -1,7 +1,6 @@
 {
   "name": "nw-demo",
   "main": "index.html",
-  "snapshot": "mytest.bin",
   "window": {
     "title": "test---aaaa"
   }
