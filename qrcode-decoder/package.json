@@ -1,0 +1,11 @@
+{
+  "name": "nw-demo",
+  "main": "index.html",
+  "window": {
+    "title": "qrcode decoder"
+  },
+  "dependencies": {
+    "jsqrcode": "0.0.6",
+    "canvas": "~1.1.3"
+  }
+}
