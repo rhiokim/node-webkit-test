@@ -1,0 +1,10 @@
+{
+  "name": "font loader",
+  "main": "index.html",
+  "window": {
+    "title": "font"
+  },
+  "dependencies": {
+    "font": "0.0.4"
+  }
+}
