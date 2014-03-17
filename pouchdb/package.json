@@ -1,0 +1,13 @@
+{
+  "name": "pouchdb-app",
+  "main": "index.html",
+  "window": {
+    "title": "pouchdb test",
+    "width": 400,
+    "height": 300
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "pouchdb": "~1.1.0"
+  }
+}

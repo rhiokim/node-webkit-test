@@ -1,0 +1,7 @@
+{
+  "name": "updater",
+  "main": "index.html",
+  "window": {
+    "title": "auto updater"
+  }
+}
