@@ -6,8 +6,9 @@ $(document.body).ready(function() {
   // var PouchDB = require('pouchdb');
 
   var PouchDB = require('pouchdb');
+  var path = require('path');
 
-  var dbname = './data/haroopad';
+  var dbname = path.join('/Users/rhio/Works/free/node-webkit-test/pouchdb', 'data/haroopad');
   var db = new PouchDB(dbname, {
     adapter: 'leveldb'
   });
@@ -17,6 +18,17 @@ $(document.body).ready(function() {
   var opts = {continuous: true, complete: function() {
     alert('done');
   }};
+
+  function createDesignDoc(name, mapFunction) {
+    var ddoc = {
+      _id: '_design/' + name,
+      views: {}
+    };
+    ddoc.views[name] = {
+      map: mapFunction.toString()
+    };
+    return ddoc;
+  }
 
   db.changes({
     onChnage: function() {
@@ -57,6 +69,25 @@ $(document.body).ready(function() {
   $('#getall').click(function(e) {
     db.allDocs(function(err, doc) {
       console.log(doc);
+    });
+  })
+  $('#_view').click(function(e) {
+    var designDoc = createDesignDoc('by_month', function(doc) {
+      if (doc.trash != true) {
+        var d = new Date(doc.updated_at);
+        var keys = [ d.getFullYear(), d.getMonth() + 1, d.getDate() ];
+
+        emit(keys, doc);
+      }
+    });
+
+    db.put(designDoc).then(function(doc) {
+      // design doc created!
+      alert('success')
+    }).catch(function(err) {
+      alert('exist')
+      // if err.name === 'conflict', then
+      // design doc already exists
     });
   })
 });
