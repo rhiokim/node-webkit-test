@@ -1,0 +1,8 @@
+{
+  "name": "nw-demo",
+  "main": "index.html",
+  "window": {
+    "title": "test---aaaa",
+    "frame": false
+  }
+}
