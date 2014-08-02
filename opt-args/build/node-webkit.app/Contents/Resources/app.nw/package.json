@@ -1,0 +1,8 @@
+{
+  "name": "nw args",
+  "main": "index.html",
+  "window": {
+    "title": "Node-webkit Arg"
+  },
+  "chromium-args": "--enable-threaded-compositing"
+}

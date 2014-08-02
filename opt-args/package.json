@@ -1,7 +1,9 @@
 {
-  "name": "nw-demo",
+  "name": "nw args",
   "main": "index.html",
   "window": {
-    "title": "test---aaaa"
-  }
+    "title": "Node-webkit Arg"
+  },
+  "single-instance": true,
+  "chromium-args": "--enable-threaded-compositing"
 }
