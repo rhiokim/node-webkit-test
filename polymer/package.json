@@ -1,7 +1,7 @@
 {
-  "name": "",
+  "name": "polymer",
   "main": "index.html",
   "window": {
-    "title": ""
+    "title": "polymer"
   }
 }
