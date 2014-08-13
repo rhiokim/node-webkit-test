@@ -6,8 +6,13 @@
     "width": 400,
     "height": 300
   },
-  "dependencies": {},
+  "dependencies": {
+    "pouchdb": "~3.0.0"
+  },
   "devDependencies": {
-    "pouchdb": "~1.1.0"
+    "pouchdb": "~3.0.0"
+  },
+  "scripts": {
+    "pouchdb": "cd ./node_modules/pouchdb/node_modules/leveldown; nw-gyp configure --target=0.10.2; nw-gyp build"
   }
 }
