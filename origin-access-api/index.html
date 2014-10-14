@@ -1,0 +1,16 @@
+<html>
+<head>
+<title>Local World!</title>
+<script>
+  var gui = require('nw.gui');
+  var win = gui.Window.get();
+
+  gui.App.addOriginAccessWhitelistEntry('http://localhost:8080/', 'app', 'myapp', true);
+</script>
+</head>
+<body>
+<h1>local page!</h1>
+
+<a href="http://localhost:8080/remote.html">remote</a>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>Hello World!</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+  var gui = require('nw.gui');
+  var win = gui.Window.get();
+
+  //ref: https://github.com/jtg-gg/node-webkit/releases/tag/nw-v0.9.2-jtg-gg
+
+  if (window.Notification) {
+    Notification.requestPermission();
+
+    if (Notification.permission) {
+      var noti = new Notification('title', {
+        tag: 'tag',
+        body: 'body',
+        icon: 'https://pbs.twimg.com/profile_images/1542177164/npm_logo_sticker-p217036649643511140qjcl_400_reasonably_small.jpg'
+      });
+    }
+  }
+</script>
+</head>
+<body>
+<h1>Hello World!</h1>
+</body>
+</html>
