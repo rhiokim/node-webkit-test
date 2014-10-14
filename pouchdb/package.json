@@ -7,12 +7,13 @@
     "height": 300
   },
   "dependencies": {
-    "pouchdb": "~3.0.0"
+    "pouchdb": "~3.0.6"
   },
   "devDependencies": {
-    "pouchdb": "~3.0.0"
+    "pouchdb": "~3.0.6"
   },
   "scripts": {
-    "pouchdb": "cd ./node_modules/pouchdb/node_modules/leveldown; nw-gyp configure --target=0.10.2; nw-gyp build"
+    "pouchdb": "cd ./node_modules/pouchdb/node_modules/leveldown; nw-gyp clean; nw-gyp configure --target=0.10.5 --arch=x64; nw-gyp build",
+    "nw": "~/Works/my/haroo-up/lib/node-webkit-v0.10.5-osx-x64/node-webkit.app/Contents/MacOS/node-webkit ."
   }
 }
