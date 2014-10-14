@@ -21,13 +21,13 @@ $(document.body).ready(function() {
       baseDir = '/Users/rhio/Works/free/node-webkit-test/pouchdb';
     break;
   }
-  var dbname = path.join(baseDir, 'data', 'haroopad');
+  var dbname = path.join(baseDir, 'data', 'haroopad2');
   var db = new PouchDB(dbname, {
     adapter: 'leveldb'
   });
 
   // var remoteCouch = 'https://localhost:6984/'+ dbname;
-  var remoteCouch = "http://haroopad:2w9EgmD;'hH`nyyA3qS(9`nFs@localhost:5984/haroopad";
+  var remoteCouch = "http://rhiokim:1@localhost:5984/rhiokim2";
   var opts = {continuous: true, complete: function() {
     alert('done');
   }};

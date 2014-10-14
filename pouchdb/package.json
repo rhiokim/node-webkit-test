@@ -13,7 +13,7 @@
     "pouchdb": "~3.0.6"
   },
   "scripts": {
-    "pouchdb": "cd ./node_modules/pouchdb/node_modules/leveldown; nw-gyp clean; nw-gyp configure --target=0.10.5 --arch=x64; nw-gyp build",
-    "nw": "~/Works/my/haroo-up/lib/node-webkit-v0.10.5-osx-x64/node-webkit.app/Contents/MacOS/node-webkit ."
+    "pouchdb": "cd ./node_modules/pouchdb/node_modules/leveldown; nw-gyp clean; nw-gyp configure --target=0.8.6; nw-gyp build",
+    "nw": "~/Works/my/haroo-up/lib/node-webkit-v0.8.6-osx-ia32/node-webkit.app/Contents/MacOS/node-webkit ."
   }
 }
