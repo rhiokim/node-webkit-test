@@ -1,0 +1,16 @@
+{
+  "name": "pouchdb-app",
+  "main": "index.html",
+  "window": {
+    "title": "pouchdb test",
+    "width": 400,
+    "height": 300
+  },
+  "dependencies": {
+    "pouchdb": "git://github.com/rhiokim/pouchdb.git"
+  },
+  "scripts": {
+    "pouchdb": "cd ./node_modules/pouchdb/node_modules/leveldown; nw-gyp clean; nw-gyp configure --target=0.11.0-rc1 --arch=x64; nw-gyp build",
+    "nw": "~/Works/my/haroo-up/lib/node-webkit-v0.11.0-rc1-osx-x64/node-webkit.app/Contents/MacOS/node-webkit ."
+  }
+}
