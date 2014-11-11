@@ -26,10 +26,10 @@ function arrayFirst(arr, callback) {
 // if the first result is an error, return an error
 function yankError(callback) {
   return function (err, results) {
-    if (err || results[0].error) {
+    if (err || (results[0] && results[0].error)) {
       callback(err || results[0]);
     } else {
-      callback(null, results[0]);
+      callback(null, results.length ? results[0]  : results);
     }
   };
 }
@@ -409,11 +409,11 @@ AbstractPouchDB.prototype.revsDiff =
 AbstractPouchDB.prototype.compactDocument =
   utils.adapterFun('compactDocument', function (docId, maxHeight, callback) {
   var self = this;
-  this._getRevisionTree(docId, function (err, rev_tree) {
+  this._getRevisionTree(docId, function (err, revTree) {
     if (err) {
       return callback(err);
     }
-    var height = computeHeight(rev_tree);
+    var height = computeHeight(revTree);
     var candidates = [];
     var revs = [];
     Object.keys(height).forEach(function (rev) {
@@ -422,14 +422,13 @@ AbstractPouchDB.prototype.compactDocument =
       }
     });
 
-    merge.traverseRevTree(rev_tree, function (isLeaf, pos, revHash, ctx, opts) {
+    merge.traverseRevTree(revTree, function (isLeaf, pos, revHash, ctx, opts) {
       var rev = pos + '-' + revHash;
       if (opts.status === 'available' && candidates.indexOf(rev) !== -1) {
-        opts.status = 'missing';
         revs.push(rev);
       }
     });
-    self._doCompaction(docId, rev_tree, revs, callback);
+    self._doCompaction(docId, revs, callback);
   });
 });
 
@@ -778,7 +777,32 @@ AbstractPouchDB.prototype.bulkDocs =
     }
   }
 
-  return this._bulkDocs(req, opts, this.autoCompact(callback));
+  if (!opts.new_edits && this.type() !== 'http') {
+    // ensure revisions of the same doc are sorted, so that
+    // the local adapter processes them correctly (#2935)
+    req.docs.sort(function (a, b) {
+      var idCompare = utils.compare(a._id, b._id);
+      if (idCompare !== 0) {
+        return idCompare;
+      }
+      var aStart = a._revisions ? a._revisions.start : 0;
+      var bStart = b._revisions ? b._revisions.start : 0;
+      return utils.compare(aStart, bStart);
+    });
+  }
+
+  return this._bulkDocs(req, opts, this.autoCompact(function (err, res) {
+    if (err) {
+      return callback(err);
+    }
+    if (!opts.new_edits) {
+      // this is what couch does when new_edits is false
+      res = res.filter(function (x) {
+        return x.error;
+      });
+    }
+    callback(null, res);
+  }));
 });
 
 AbstractPouchDB.prototype.registerDependentDatabase =

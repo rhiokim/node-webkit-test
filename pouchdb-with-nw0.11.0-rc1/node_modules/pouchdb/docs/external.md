@@ -28,6 +28,10 @@ Replicate from PouchDB to Dat.
 
 Implement the Datalog query language on PouchDB, with indexes.
 
+#### [PouchDB Dump](https://github.com/nolanlawson/pouchdb-dump-cli) and [PouchDB Load](https://github.com/nolanlawson/pouchdb-load)
+
+Dump a PouchDB/CouchDB to a file, then load it wholesale. Designed for fast initial replication.
+
 #### [Delta Pouch](https://github.com/redgeoff/delta-pouch)
 
 Implements the handy "every document is a delta" pattern, so you don't have to deal with conflicts.
@@ -98,23 +102,41 @@ A standalone CouchDB-style REST interface server to PouchDB.
 
 An express submodule with a CouchDB-style REST interface to PouchDB. Powers PouchDB Server.
 
-{% include anchor.html title="MV* Adapters" hash="MV* Adapters" %}
+{% include anchor.html title="Framework adapters" hash="framework_adapters" %}
 
-#### [Backbone PouchDB](https://github.com/jo/backbone-pouch)
+### Angular
 
-Backbone PouchDB Sync Adapter.
-
-#### [Ember Pouch](https://github.com/nolanlawson/ember-pouch)
-
-Ember Data adapter for PouchDB/CouchDB.
-
-#### [AngularJS PouchDB Support](https://github.com/wspringer/angular-pouchdb)
+#### [angular-pouchdb](https://github.com/wspringer/angular-pouchdb)
 
 Wrapper for using PouchDB within Angular.js.
 
 #### [Factoryng - AngularJS Adapter](https://github.com/redgeoff/factoryng)
 
 An all-in-one AngularJS factory that wraps PouchDB and Delta Pouch.
+
+#### [ngPouch](https://github.com/jrhicks/ngPouch)
+
+Angular service to persist remote connection settings and maintain continuous replication.
+
+#### [ng-pouchdb](https://github.com/danielzen/ng-pouchdb)
+
+AngularJS binding for PouchDB.
+
+### Backbone
+
+#### [Backbone PouchDB](https://github.com/jo/backbone-pouch)
+
+Backbone PouchDB Sync Adapter.
+
+### Ember
+
+#### [Ember Pouch](https://github.com/nolanlawson/ember-pouch)
+
+Ember Data adapter for PouchDB/CouchDB.
+
+#### [ember-pouchdb](https://github.com/taras/ember-pouchdb)
+
+Promisy PouchDB wrapper for Ember.js
 
 {% include anchor.html title="Other languages" hash="Other languages" %}
 

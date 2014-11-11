@@ -10,6 +10,7 @@ var merge = require('../merge');
 var utils = require('../utils');
 var migrate = require('../deps/migrate');
 var vuvuzela = require('vuvuzela');
+var Deque = require("double-ended-queue");
 
 var DOC_STORE = 'document-store';
 var BY_SEQ_STORE = 'by-sequence';
@@ -70,13 +71,12 @@ function LevelPouch(opts, callback) {
         return callback(err);
       }
       db = dbStore.get(name);
-      db._locks = db._locks || new utils.Set();
       db._docCountQueue = {
         queue : [],
         running : false,
         docCount : -1
       };
-      db._compactionQueue = [];
+      db._writeQueue = new Deque();
       if (opts.db || opts.noMigrate) {
         afterDBCreated();
       } else {
@@ -184,6 +184,34 @@ function LevelPouch(opts, callback) {
       });
     });
   };
+
+  // all read/write operations to the database are done in a queue,
+  // similar to how websql/idb works. this avoids problems such
+  // as e.g. compaction needing to have a lock on the database while
+  // it updates stuff. in the future we can revisit this.
+  function writeLock(fun) {
+    return utils.getArguments(function (args) {
+
+      var callback = args[args.length - 1];
+      args[args.length - 1] = utils.getArguments(function (cbArgs) {
+        callback.apply(null, cbArgs);
+        process.nextTick(function () {
+          db._writeQueue.shift();
+          if (db._writeQueue.length) {
+            db._writeQueue.peekFront()();
+          }
+        });
+      });
+
+      db._writeQueue.push(function () {
+        fun.apply(null, args);
+      });
+
+      if (db._writeQueue.length === 1) {
+        db._writeQueue.peekFront()();
+      }
+    });
+  }
 
   function formatSeq(n) {
     return ('0000000000000000' + n).slice(-16);
@@ -312,26 +340,10 @@ function LevelPouch(opts, callback) {
     });
   };
 
-  api.lock = function (id) {
-    if (db._locks.has(id)) {
-      return false;
-    } else {
-      db._locks.add(id);
-      return true;
-    }
-  };
-
-  api.unlock = function (id) {
-    if (db._locks.has(id)) {
-      db._locks.delete(id);
-      return true;
-    }
-    return false;
-  };
-
-  api._bulkDocs = function (req, opts, callback) {
+  api._bulkDocs = writeLock(function (req, opts, callback) {
     var newEdits = opts.new_edits;
     var results = new Array(req.docs.length);
+    var lock = new utils.Set();
 
     // parse the docs and give each a sequence number
     var userDocs = req.docs;
@@ -421,7 +433,7 @@ function LevelPouch(opts, callback) {
       current++;
       inProgress++;
       if (currentDoc._id && utils.isLocalId(currentDoc._id)) {
-        api[currentDoc._deleted ? '_removeLocal' : '_putLocal'](
+        api[currentDoc._deleted ? '_removeLocalNoLock' : '_putLocalNoLock'](
             currentDoc, function (err, resp) {
           if (err) {
             results[index] = err;
@@ -434,31 +446,32 @@ function LevelPouch(opts, callback) {
         return;
       }
 
-      if (!api.lock(currentDoc.metadata.id)) {
+      if (lock.has(currentDoc.metadata.id)) {
         results[index] = makeErr(errors.REV_CONFLICT,
-                                 'someobody else is accessing this');
+                                 'somebody else is accessing this');
         inProgress--;
         return processDocs();
       }
+      lock.add(currentDoc.metadata.id);
 
       stores.docStore.get(currentDoc.metadata.id, function (err, oldDoc) {
         if (err) {
           if (err.name === 'NotFoundError') {
             insertDoc(currentDoc, index, function () {
-              api.unlock(currentDoc.metadata.id);
+              lock.delete(currentDoc.metadata.id);
               inProgress--;
               processDocs();
             });
           } else {
             err.error = true;
             results[index] = err;
-            api.unlock(currentDoc.metadata.id);
+            lock.delete(currentDoc.metadata.id);
             inProgress--;
             processDocs();
           }
         } else {
           updateDoc(oldDoc, currentDoc, index, function () {
-            api.unlock(currentDoc.metadata.id);
+            lock.delete(currentDoc.metadata.id);
             inProgress--;
             processDocs();
           });
@@ -739,7 +752,9 @@ function LevelPouch(opts, callback) {
         };
       });
       LevelPouch.Changes.notify(name);
-      process.nextTick(function () { callback(null, aresults); });
+      process.nextTick(function () {
+        callback(null, aresults);
+      });
     }
 
     function makeErr(err, seq) {
@@ -753,7 +768,7 @@ function LevelPouch(opts, callback) {
       }
       processDocs();
     });
-  };
+  });
   api._allDocs = function (opts, callback) {
     opts = utils.clone(opts);
     countDocs(function (err, docCount) {
@@ -1008,35 +1023,22 @@ function LevelPouch(opts, callback) {
     });
   };
 
-  api._doCompaction = function (docId, rev_tree, revs, callback) {
+  api._doCompaction = writeLock(function (docId, revs, callback) {
     if (!revs.length) {
       return callback();
     }
-    db._compactionQueue.push([docId, rev_tree, revs, callback]);
-    if (db._compactionQueue.length === 1) {
-      api._doCompactionSequentially(docId, rev_tree, revs, callback);
-    }
-  };
-
-  // execute compactions synchronously so we
-  // can correctly dedup attachments
-  api._doCompactionSequentially = function (docId, rev_tree, revs, callback) {
-    var originalCallback = callback;
-    callback = function (err) {
-      originalCallback(err);
-      process.nextTick(function () {
-        db._compactionQueue.shift();
-        if (db._compactionQueue.length) {
-          api._doCompactionSequentially.apply(api, db._compactionQueue[0]);
-        }
-      });
-    };
     stores.docStore.get(docId, function (err, metadata) {
       if (err) {
         return callback(err);
       }
       var seqs = metadata.rev_map; // map from rev to seq
-      metadata.rev_tree = rev_tree;
+      merge.traverseRevTree(metadata.rev_tree, function (isLeaf, pos,
+                                                         revHash, ctx, opts) {
+        var rev = pos + '-' + revHash;
+        if (revs.indexOf(rev) !== -1) {
+          opts.status = 'missing';
+        }
+      });
       var batch = [];
       batch.push({
         key: metadata.id,
@@ -1154,7 +1156,7 @@ function LevelPouch(opts, callback) {
         });
       });
     });
-  };
+  });
 
   api._getLocal = function (id, callback) {
     stores.localStore.get(id, function (err, doc) {
@@ -1166,7 +1168,12 @@ function LevelPouch(opts, callback) {
     });
   };
 
-  api._putLocal = function (doc, callback) {
+  api._putLocal = writeLock(function (doc, callback) {
+    api._putLocalNoLock(doc, callback);
+  });
+
+  // the NoLock version is for use by bulkDocs
+  api._putLocalNoLock = function (doc, callback) {
     delete doc._revisions; // ignore this, trust the rev
     var oldRev = doc._rev;
     var id = doc._id;
@@ -1194,7 +1201,12 @@ function LevelPouch(opts, callback) {
     });
   };
 
-  api._removeLocal = function (doc, callback) {
+  api._removeLocal = writeLock(function (doc, callback) {
+    api._removeLocalNoLock(doc, callback);
+  });
+
+  // the NoLock version is for use by bulkDocs
+  api._removeLocalNoLock = function (doc, callback) {
     stores.localStore.get(doc._id, function (err, resp) {
       if (err) {
         return callback(err);
