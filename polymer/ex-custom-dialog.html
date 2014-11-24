@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script src="./bower_components/webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="./bower_components/custom-paper-dialog/paper-dialog.html">
+  <style>
+  </style>
+  <script>
+    function show() {
+      var scope = document.querySelector('paper-dialog');
+      scope.toggle();
+    }
+  </script>
+</head>
+<body>
+  <paper-dialog heading="Custom Size &amp; Position" class="size-position" transition="core-transition-center">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  </paper-dialog>
+
+  <button onclick="show();">show</button>
+</body>
+</html>

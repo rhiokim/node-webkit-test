@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script src="./bower_components/webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="./bower_components/">
+  <script>
+  </script>
+</head>
+<body>
+  <!-- a simple dialog element made with core-overlay -->
+  <polymer-element name="x-dialog" attributes="opened autoCloseDisabled">
+  <template>
+    <style>
+      :host {
+      }
+    </style>
+    <content></content>
+  </template>
+  <script>
+
+  Polymer('name', {
+  
+    ready: function() {
+      this.$.overlay.target = this;
+    },
+
+    toggle: function() {
+      this.$.overlay.toggle();
+    }
+
+  });
+
+  </script>
+  </polymer-element>
+
+</body>
+</html>

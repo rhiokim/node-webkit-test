@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>core-overlay</title>
+  <script src="./bower_components/webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="./bower_components/core-transition/core-transition-css.html">
+  <link rel="import" href="./bower_components/core-overlay/core-overlay.html">
+  <script>
+    function show() {
+      var el = document.querySelector('#dialog1');
+      el.toggle();
+    }
+
+    function targetShow() {
+      var el = document.querySelector('#dialog1');
+      var target = document.querySelector('#target');
+      el.target = target;
+      el.toggle();
+    }
+
+    function targetSizeShow() {
+      var el = document.querySelector('#dialog1');
+      var target = document.querySelector('#target2');
+      el.sizingTarget = target;
+      el.toggle();
+    }
+  </script>
+</head>
+<body>
+  <div id="target">target</div>
+
+  <div id="target2" style="background-color:red; width:300px; height:300px;">target</div>
+
+  <x-dialog id="dialog1" class="dialog">
+    <h2>Dialog</h2>
+    <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed fringilla sapien sed enim sollicitudin laoreet. Suspendisse suscipit, metus ac volutpat sodales, libero magna semper lacus, molestie fringilla massa orci ut arcu. Nullam sodales urna sit amet odio vehicula mattis.</div><br><br>
+    <div>Ut aliquam vulputate congue. Vestibulum pretium pretium nulla quis sollicitudin. Praesent lacinia congue erat nec mattis. Fusce commodo lacus est. Duis turpis eros, ultrices sed aliquet non, blandit egestas velit. Integer a augue nec lorem tristique hendrerit. Curabitur imperdiet risus id enim bibendum vestibulum. Integer id magna at arcu faucibus fermentum vel a augue. Sed fringilla venenatis dolor, in blandit magna molestie luctus. Vestibulum dignissim posuere ultrices. Aenean urna nisl, tincidunt vitae iaculis ut, pharetra nec eros.</div><br><br>
+
+    <button core-overlay-toggle>OK</button>
+  </x-dialog>
+
+  <!-- a simple dialog element made with core-overlay -->
+  <polymer-element name="x-dialog" attributes="opened autoCloseDisabled">
+  <template>
+    <style>
+
+      :host {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 13px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        overflow: hidden;
+        background: white;
+        padding:30px 42px;
+        outline: 1px solid rgba(0,0,0,0.2);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      }
+    </style>
+    <core-overlay id="overlay" layered backdrop opened="{{opened}}" autoCloseDisabled="{{autoCloseDisabled}}"  transition="core-transition-center"></core-overlay>
+    <content></content>
+  </template>
+  <script>
+
+  Polymer('x-dialog', {
+  
+    ready: function() {
+      this.$.overlay.target = this;
+      this.$.overlay.sizingTarget = document.querySelector('#target2');
+    },
+
+    toggle: function() {
+      this.$.overlay.toggle();
+    }
+
+  });
+
+  </script>
+  </polymer-element>
+
+
+  <button onclick="show()">show</button>
+  <button onclick="targetShow()">targeted show</button>
+  <button onclick="targetSizeShow()">targeted sizing show</button>
+</body>
+</html>
