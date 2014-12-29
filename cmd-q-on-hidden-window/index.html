@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <title>app quit cmd-q on the hidden window</title>
+</head>
+<body>
+  <script>
+    var gui = require('nw.gui');
+    var win = gui.Window.get();
+
+    var mb = new gui.Menu({ type:"menubar" });
+    mb.createMacBuiltin("your-app-name");
+    gui.Window.get().menu = mb;
+
+    var option = {
+      key : "Ctrl+Q",
+      active : function() {
+        console.log("Global desktop keyboard shortcut: " + this.key + " active."); 
+        win.close();
+      },
+      failed : function(msg) {
+        // :(, fail to register the |key| or couldn't parse the |key|.
+        console.log(msg);
+      }
+    };
+
+    // Create a shortcut with |option|.
+    var shortcut = new gui.Shortcut(option);
+
+    // Register global desktop shortcut, which can work without focus.
+    gui.App.registerGlobalHotKey(shortcut);
+
+    // win.hide();
+    win.on('close', function() {
+      alert('fire close event');
+    });
+  </script>
+</body>
+</html>

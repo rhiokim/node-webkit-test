@@ -1,0 +1,7 @@
+{
+  "name": "hidden window",
+  "main": "index.html",
+  "window": {
+    "title": "cmd-q in hidden window"
+  }
+}
